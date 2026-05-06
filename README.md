@@ -75,18 +75,37 @@ Every question is grounded in a *specific trigger* in her scraped data. That's t
 ## Quick start
 
 ```bash
-# 1. Install
+# 1. Install Python deps
 uv sync
 
 # 2. Configure .env
 # Add APIFY_API_TOKEN (apply coupon ALL_THINGS_AGENT first at console.apify.com)
 # Add ANTHROPIC_API_KEY
+```
 
-# 3. Run the Streamlit demo
+### Option A: Next.js frontend (the polished demo)
+
+The Next.js UI calls a FastAPI wrapper around the Python engine. Two services, two terminals:
+
+```bash
+# Terminal 1 — FastAPI backend
+uv run uvicorn api:app --reload --port 8000
+
+# Terminal 2 — Next.js frontend (run from web/ directory)
+cd web && npm install && npm run dev
+# → http://localhost:3000
+```
+
+### Option B: Streamlit demo (single command, no Node)
+
+```bash
 uv run streamlit run app.py
 # → http://localhost:8501
+```
 
-# 4. Run via the CLI / OpenClaw skill
+### Option C: CLI / OpenClaw skill
+
+```bash
 uv run python skill/scripts/run_wargame.py \
   --name "Karena Cai" \
   --pitch "Your pitch in 2-3 sentences..." \
@@ -124,19 +143,25 @@ uv run pytest -m integration
 
 ```
 apify_may6/
-├── app.py                          # Streamlit demo
-├── pitch_lens/
-│   ├── briefing.py                 # Wargame, Question, Source, ProfileData, Tweet, Article schemas
-│   ├── apify_actors.py             # 4 Actor wrappers + fallback chains + normalizers
-│   ├── synthesizer.py              # Claude Sonnet 4.6 with forced tool_use
-│   ├── pipeline.py                 # run_full() orchestrator + progress callback
-│   └── mocks.py                    # MOCK_APIFY / MOCK_LLM fixtures
-├── skill/
-│   ├── SKILL.md                    # OpenClaw skill runbook
+├── app.py                          # Streamlit demo (Option B)
+├── api.py                          # FastAPI wrapper used by Next.js frontend
+├── pitch_lens/                     # shared Python engine
+│   ├── briefing.py                 #   Wargame, Question, Source, ProfileData, Tweet, Article schemas
+│   ├── apify_actors.py             #   4 Actor wrappers + fallback chains + normalizers
+│   ├── synthesizer.py              #   Claude Sonnet 4.6 with forced tool_use
+│   ├── pipeline.py                 #   run_full() orchestrator + progress callback
+│   └── mocks.py                    #   MOCK_APIFY / MOCK_LLM fixtures
+├── web/                            # Next.js + Tailwind frontend (Option A)
+│   ├── app/page.tsx                #   form + state + fetch
+│   ├── app/components/             #   QuestionCard, WargameResult
+│   ├── app/types.ts                #   TypeScript mirror of pitch_lens schemas
+│   └── public/karena_cai.json      #   cached demo fallback
+├── skill/                          # OpenClaw skill packaging (Option C)
+│   ├── SKILL.md
 │   ├── requirements.txt
-│   └── scripts/run_wargame.py      # CLI entrypoint
+│   └── scripts/run_wargame.py
 ├── tests/                          # 25 unit + 1 integration
-├── cache/karena_cai.json           # offline demo fallback
+├── cache/karena_cai.json           # offline demo fallback (Streamlit)
 └── pyproject.toml
 ```
 
