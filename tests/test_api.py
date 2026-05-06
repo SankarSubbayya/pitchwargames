@@ -128,6 +128,32 @@ class TestWargameEndpoint:
         assert "boom" in resp.json()["detail"]
 
 
+class TestResolveProfileEndpoint:
+    def test_resolves_handles_for_valid_request(self, client, monkeypatch):
+        c, _ = client
+        fake = MagicMock(
+            return_value={
+                "linkedin_url": "https://www.linkedin.com/in/karena-cai-8208a336",
+                "twitter_handle": "karenaCai",
+            }
+        )
+        monkeypatch.setattr("api.apify_actors.resolve_profile_handles", fake)
+
+        resp = c.post("/api/resolve-profile", json={"judge_name": " Karena Cai "})
+
+        assert resp.status_code == 200
+        assert resp.json() == {
+            "linkedin_url": "https://www.linkedin.com/in/karena-cai-8208a336",
+            "twitter_handle": "karenaCai",
+        }
+        fake.assert_called_once_with("Karena Cai")
+
+    def test_resolve_profile_rejects_empty_name(self, client):
+        c, _ = client
+        resp = c.post("/api/resolve-profile", json={"judge_name": ""})
+        assert resp.status_code == 422
+
+
 class TestCORS:
     def test_localhost_3000_origin_allowed(self, client):
         c, _ = client
@@ -142,6 +168,19 @@ class TestCORS:
         # Preflight should pass
         assert resp.status_code in (200, 204)
         assert resp.headers.get("access-control-allow-origin") == "http://localhost:3000"
+
+    def test_localhost_3002_origin_allowed_for_next_fallback_port(self, client):
+        c, _ = client
+        resp = c.options(
+            "/api/wargame",
+            headers={
+                "Origin": "http://localhost:3002",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "content-type",
+            },
+        )
+        assert resp.status_code in (200, 204)
+        assert resp.headers.get("access-control-allow-origin") == "http://localhost:3002"
 
 
 @pytest.mark.integration

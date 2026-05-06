@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from typing import Any, Iterable
 
 from apify_client import ApifyClient
@@ -139,6 +140,47 @@ def recent_tweets(handle: str, max_items: int = 20) -> list[Tweet]:
     return [_normalize_tweet(it) for it in items][:max_items]
 
 
+def resolve_profile_handles(name: str) -> dict[str, str | None]:
+    """Best-effort discovery of public LinkedIn and X handles from a name."""
+    clean_name = name.strip()
+    if not clean_name:
+        return {"linkedin_url": None, "twitter_handle": None}
+
+    if _is_mock():
+        if clean_name.lower() == "karena cai":
+            return {
+                "linkedin_url": "https://www.linkedin.com/in/karena-cai-8208a336",
+                "twitter_handle": None,
+            }
+        return {"linkedin_url": None, "twitter_handle": None}
+
+    search_input = {
+        "queries": (
+            f'"{clean_name}" '
+            '(site:linkedin.com/in OR site:x.com OR site:twitter.com)'
+        ),
+        "resultsPerPage": 8,
+        "maxPagesPerQuery": 1,
+    }
+    items = _run(SEARCH_ACTOR, search_input, timeout_secs=90)
+    results: list[dict] = []
+    for page in items:
+        results.extend(page.get("organicResults", []))
+
+    linkedin_url: str | None = None
+    twitter_handle: str | None = None
+    for result in results:
+        url = result.get("url") or ""
+        if not linkedin_url:
+            linkedin_url = _extract_linkedin_url(url)
+        if not twitter_handle:
+            twitter_handle = _extract_twitter_handle(url)
+        if linkedin_url and twitter_handle:
+            break
+
+    return {"linkedin_url": linkedin_url, "twitter_handle": twitter_handle}
+
+
 def web_mentions(name: str, max_results: int = 5) -> list[Article]:
     """Search Google for the name, then crawl the top results for full article text."""
     if _is_mock():
@@ -221,3 +263,18 @@ def _normalize_tweet(raw: dict) -> Tweet:
 
 def _handle_from_url(url: str) -> str:
     return url.rstrip("/").split("/")[-1]
+
+
+def _extract_linkedin_url(url: str) -> str | None:
+    match = re.search(r"https?://(?:www\.)?linkedin\.com/in/[^/?#]+", url)
+    return match.group(0) if match else None
+
+
+def _extract_twitter_handle(url: str) -> str | None:
+    match = re.search(r"https?://(?:www\.)?(?:x|twitter)\.com/([^/?#]+)", url)
+    if not match:
+        return None
+    handle = match.group(1).lstrip("@")
+    if handle.lower() in {"home", "search", "share", "intent", "i"}:
+        return None
+    return handle
