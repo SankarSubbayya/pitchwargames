@@ -58,7 +58,13 @@ def _is_mock() -> bool:
     return os.environ.get("MOCK_APIFY", "").lower() in {"1", "true", "yes"}
 
 
-def _run(actor_id: str, run_input: dict, *, timeout_secs: int = 120) -> list[dict]:
+def _run(
+    actor_id: str,
+    run_input: dict,
+    *,
+    timeout_secs: int = 120,
+    memory_mbytes: int = 1024,
+) -> list[dict]:
     """Call an Actor and return the dataset items as a list of dicts.
 
     Mirrors the agent_toolkit pattern: client.actor(id).call(run_input=...) →
@@ -66,7 +72,11 @@ def _run(actor_id: str, run_input: dict, *, timeout_secs: int = 120) -> list[dic
     """
     client = _client()
     log.info("apify: calling %s with %s", actor_id, _short(run_input))
-    run = client.actor(actor_id).call(run_input=run_input, timeout_secs=timeout_secs)
+    run = client.actor(actor_id).call(
+        run_input=run_input,
+        timeout_secs=timeout_secs,
+        memory_mbytes=memory_mbytes,
+    )
     if not run or not run.get("defaultDatasetId"):
         return []
     items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
