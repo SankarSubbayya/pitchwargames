@@ -1,0 +1,50 @@
+{
+  "judge_name": "Karena Cai",
+  "judge_one_liner": "Karena Cai is a Caltech PhD, ex-Cruise Senior Applied Scientist, and AI educator/Dev Advocate at DeepLearning.AI who builds and teaches AI coding tools — she cares deeply about whether AI tools actually accelerate developer learning and onboarding, not just demo well.",
+  "pitch_summary": "Pitch Wargames is an adversarial pitch coaching tool that uses 4 composed Apify Actors (LinkedIn, X, Google Search, Web Content Crawler) plus Claude Sonnet 4.6 to scrape live judge data and predict the 5 hardest questions a specific investor will ask a specific founder before the meeting happens.",
+  "predicted_questions": [
+    {
+      "text": "You're scraping live data from LinkedIn, X, and the web right before a pitch — what happens when the scrape is incomplete, rate-limited, or just wrong? How do founders know they're not walking in with a hallucinated profile of me?",
+      "why_they_ask": "Karena's entire career at Cruise was about safety-critical evaluation — she personally led behavioral testing protocols that caught 5x more regressions and she re-architected a core ML model for >40% safety-critical performance gains. She will immediately probe the reliability and failure modes of your data pipeline, because she knows firsthand that a confident wrong output is worse than no output.",
+      "suggested_answer": "Great question — and it's the one we lose sleep over. We show founders exactly what was scraped, source by source, before the simulation runs, so they can see gaps and override bad data. When a scrape is thin — like yours was on X today — we surface that explicitly and tighten the confidence framing on every question rather than papering over it with false precision. We'd rather say 'sparse data, 3 sharp questions' than '5 questions' built on noise.",
+      "trap_to_avoid": "Don't say 'Claude handles it' or 'the model is smart enough to fill in gaps' — Karena built testing infrastructure specifically because models fail silently, and that answer will end the meeting. She knows exactly what it looks like when engineers outsource reliability to the model.",
+      "likelihood": "killer"
+    },
+    {
+      "text": "You're teaching founders to perform better in a room, but I've seen a lot of 'AI interview prep' tools that give people scripts they don't actually understand. How is this different from a founder just memorizing answers they can't actually defend?",
+      "why_they_ask": "Karena runs joinCurioCity — an AI education platform explicitly built around project-based learning and 'production-ready' outcomes rather than surface-level tutorial content. She teaches Claude Code and Cursor for real-world application, not rote memorization. She will probe whether your tool creates genuine preparedness or just expensive-looking flashcards.",
+      "suggested_answer": "We're not generating model answers for founders to parrot — we're generating the adversarial question and the reasoning behind why THIS judge asks it, so the founder stress-tests their own thinking before the room. The suggested answer is a scaffold, not a script. Founders who don't actually know their numbers will still get exposed; we just ensure they're exposed in rehearsal, not in front of capital. It's the difference between your Behaviors 101 course teaching the 'why' of AV architecture vs. giving engineers a cheat sheet.",
+      "trap_to_avoid": "Don't position it as 'we give them the answers' — Karena will immediately see that as the same low-quality tutorial content she's explicitly building against with her project-based course model. Show that the product builds understanding, not scripts.",
+      "likelihood": "very_likely"
+    },
+    {
+      "text": "You built an onboarding accelerator using 4 Apify Actors and Claude — that's a workflow, not a product. What's stopping DeepLearning.AI, Anthropic's own developer tools team, or a one-person Claude Code user from rebuilding this in a weekend?",
+      "why_they_ask": "Karena literally teaches developers to build production-ready apps with Claude Code and Cursor — she knows exactly how fast a skilled developer can assemble an agentic workflow from composable parts. Her own CurioCity courses show students how to do this. She will instantly see through any moat claim that isn't grounded in data network effects, proprietary training, or deep distribution.",
+      "suggested_answer": "The workflow is the easy part — you're right that a strong Claude Code user could wire this up in a weekend. The defensible layer is the adversarial reasoning model: what makes a question 'killer' vs. 'likely' for THIS judge against THIS pitch, and the calibration of that signal improves with every pitch we run. We're also building a judge corpus — structured, enriched profiles across hundreds of investors — that gets richer with use and that a weekend project doesn't have. Distribution through accelerators and pitch competitions is the second moat: by the time a one-person builder catches up, we're embedded in the prep workflow of every Y Combinator batch.",
+      "trap_to_avoid": "Don't say 'the prompts are proprietary' — Karena teaches prompt engineering and knows prompts are not a moat. And don't lead with 'Claude Sonnet 4.6' as a differentiator; she works with these models daily and knows the underlying capability is commoditizing.",
+      "likelihood": "very_likely"
+    },
+    {
+      "text": "Who is actually paying for this, and what's the repeating behavior? Founders only pitch a handful of times — how do you get recurring revenue out of a one-time high-stakes event?",
+      "why_they_ask": "Karena built KXC Consulting, joinCurioCity, and has done educational content work for Exponent — an interview prep company that specifically solved this problem by selling to a pipeline of new candidates perpetually entering the job market. She's thought about the unit economics of episodic high-stakes prep markets and will probe whether you've mapped the real usage loop.",
+      "suggested_answer": "Individual founders are the wrong unit — accelerator cohorts and pitch competition organizers are the right customer. YC has 200 founders per batch; each cohort is a fresh paying cohort and the organizer has budget and incentive to improve batch outcomes. We also see repeat use within a single fundraise: founders wargame against 3-5 different judges before a demo day, which multiplies sessions per customer. The analogy is Exponent selling to companies for interview loops, not just to individual candidates.",
+      "trap_to_avoid": "Don't describe individual founder subscriptions as your primary model without showing retention data — Karena knows the episodic nature of fundraising and will immediately flag churn as fatal if you haven't mapped the institutional buyer above the individual.",
+      "likelihood": "likely"
+    },
+    {
+      "text": "You're using scraped public data to build profiles of real investors without their consent. Have you thought through the legal and ethical exposure there — especially as someone scraping LinkedIn at scale?",
+      "why_they_ask": "Karena's background is in safety-critical systems (AV decision-making, behavioral contracts for self-driving cars) and she has spent significant time thinking about what happens when systems operate in the real world with real consequences. Her PhD literally formalized safety guarantees. She also works in a professional context — DevRel at DeepLearning.AI — where relationships with the investor and VC community matter, and burning those bridges has real cost to her ecosystem.",
+      "suggested_answer": "We scrape only publicly available information — the same data any researcher or journalist could access — and we don't store or sell investor profiles; each scrape is live and session-scoped. LinkedIn's ToS is a real constraint we're tracking, which is why we've architected the pipeline to use Google Search and web crawl as primary sources with LinkedIn as a supplementary signal rather than bulk-scraped data. We're also exploring an opt-in 'Judge Profile' program where investors submit their own preferred framing — which actually flips the dynamic and makes the product more accurate.",
+      "trap_to_avoid": "Don't dismiss the question with 'it's all public data, so it's fine' — Karena thinks in systems and second-order effects, and a glib legal answer from someone building on scraped personal profiles will read as naïve at best and reckless at worst. Show you've thought about the failure mode.",
+      "likelihood": "likely"
+    }
+  ],
+  "opening_hook": "Karena, you spent three years at Cruise building behavioral testing protocols to catch regressions before they hit the road — Pitch Wargames is that same pre-merge regression test, but for founders before they walk into a pitch room.",
+  "closing_ask": "Karena, we're raising a pre-seed round to productize the judge corpus and embed Pitch Wargames into 3 accelerator cohorts as a pilot — we're looking for a $50K–$150K check from someone who lives at the intersection of AI tooling and education. Given what you're building with CurioCity and your platform at DeepLearning.AI, we'd love you involved not just as capital but as an advisor who's already teaching founders and developers how to build with these exact tools.",
+  "sources": [
+    {"url": "https://karenaxcai.com/me", "title": "About - Karena X. Cai", "relevance": "high"},
+    {"url": "https://www.linkedin.com/in/karena-cai-8208a336", "title": "Karena Cai - DeepLearning.AI | LinkedIn", "relevance": "high"},
+    {"url": "https://karenaxcai.com/", "title": "Karena Cai's personal/professional site", "relevance": "medium"},
+    {"url": "https://x.com/karenaCai", "title": "Karena Cai (@karenaCai) / X", "relevance": "low"}
+  ]
+}
